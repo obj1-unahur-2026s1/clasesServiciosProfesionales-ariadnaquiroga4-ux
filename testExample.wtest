@@ -1,9 +1,44 @@
-import example.pepita
+import example.*
 
-describe "group of tests for pepita" {
+describe "test etapa 1" {
 
-  test "pepita has initial energy" {
-    assert.equals(100, pepita.energy())
+  test "universidades" {
+    const sanMartin = new universidad(provincia = "Buenos Aires", honorarios = 3500)
+    const rosario = new universidad(provincia = "Santa Fe", honorarios = 2800)
+    const corrientes = new universidad(provincia = "Corrientes", honorarios = 4200)
+    const hurlingham = new universidad(provincia = "Buenos Aires", honorarios = 8800)
+  }
+
+  test "profesionales" {
+    const juana = new profesionalVinculado(universidad = rosario)
+    const melina = new profesionalLitoral(universidad = corrientes)
+    const rocio = new profesionalLibres(universidad = hurlingham, honorarios = 5000, provinciasHabilitadas = ["Santa Fe", "Cordoba", "Buenos Aires"])
+    const luciana = new profesionalLibres(universidad = rosario, honorarios = 3200, provinciasHabilitadas = ["Santa Fe", "Entre Rios"])
+  }
+
+  test "empresa" {
+    const empresa = new empresa(profesionales = [juana, melina, rocio, luciana], honorarioReferencia = 3500)
+    assert.equals(2, empresa.cuantosProfesionalesEstudiaronEn(rosario))
+    assert.equals(1, empresa.cuantosProfesionalesEstudiaronEn(hurlingham))
+    assert.equals(0, empresa.cuantosProfesionalesEstudiaronEn(sanMartin))
+  }
+
+  test "profesional caro solo es rocio" {
+    assert.equals([rocio], empresa.profesionalesCaros())
+  }
+
+  test "universidades formadoras" {
+    assert.equals([rosario, corrientes, hurlingham].asSet(), empresa.universidadesDeProfesionales())
+  }
+
+  test "profesional mas barato es solo Juana" {
+    assert.equals(juana, empresa.profesionalMasBarato())
+  }
+
+  test "luciana tiene mas provincias y no es mas una empresa acotada" {
+    luciana.provincia().add("Corrientes")
+    luciana.provincia().add("Misiones")
+    assert.notThat(empresa.esGenteAcotada())
   }
 
 }
